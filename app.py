@@ -1,21 +1,26 @@
 from flask import Flask, render_template, request
 import openai
 import praw
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
 # Set up your OpenAI API key
-openai.api_key = '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'
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Set up Reddit API client
 reddit = praw.Reddit(
-    client_id='TqR3ABukMVMQ6VK8FkHOow',
-    client_secret='s8zHB0IWkC2k7Oh1EPh5iDGi52VPGQ',
+    client_id=os.getenv('REDDIT_CLIENT_ID'),
+    client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
     user_agent='Vibe_Analysis_V1'
 )
 
 def analyze_reddit():
-    subreddits = ['technology', 'machinelearning']
+    subreddits = ['technology', 'machinelearning', 'tech']
     combined_content = ""
 
     for subreddit_name in subreddits:
@@ -47,5 +52,3 @@ def analyze():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
-
-# Rebuild trigger
