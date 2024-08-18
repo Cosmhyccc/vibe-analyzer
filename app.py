@@ -4,6 +4,7 @@ import praw
 from dotenv import load_dotenv
 import os
 import logging
+import traceback
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,13 +29,12 @@ def analyze_reddit():
     try:
         subreddits = ['technology', 'machinelearning', 'tech', 'openai']
         combined_content = ""
-
         for subreddit_name in subreddits:
             subreddit = reddit.subreddit(subreddit_name)
             top_posts = subreddit.top(time_filter='day', limit=10)
             for post in top_posts:
                 combined_content += post.title + ". " + post.selftext + "\n\n"
-
+        
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
@@ -47,10 +47,15 @@ def analyze_reddit():
         paragraphs = summary.split('\n\n')
         return paragraphs
     except Exception as e:
-        logging.error(f"Error during Reddit analysis: {e}")
-        return ["An error occurred during analysis. Please try again later."]
+        error_type = type(e).__name__
+        error_message = str(e)
+        error_traceback = traceback.format_exc()
+        logging.error(f"Error type: {error_type}")
+        logging.error(f"Error message: {error_message}")
+        logging.error(f"Error traceback: {error_traceback}")
+        return [f"An error occurred during analysis: {error_type} - {error_message}. Please try again later."]
 
-## Flask routes
+# Flask routes
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -64,7 +69,23 @@ def analyze():
 def about():
     return render_template('aboutus.html')
 
+@app.route('/test-connections')
+def test_connections():
+    reddit_status = "Error"
+    openai_status = "Error"
+    try:
+        reddit.user.me()
+        reddit_status = "OK"
+    except Exception as e:
+        reddit_status = f"Error: {type(e).__name__} - {str(e)}"
+    
+    try:
+        openai.ChatCompletion.create(model="gpt-4", messages=[{"role": "user", "content": "Hello"}])
+        openai_status = "OK"
+    except Exception as e:
+        openai_status = f"Error: {type(e).__name__} - {str(e)}"
+    
+    return f"Reddit: {reddit_status}<br>OpenAI: {openai_status}"
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
-
-    #testing
