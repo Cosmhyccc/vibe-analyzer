@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import openai
+from openai import OpenAI
 import praw
 from dotenv import load_dotenv
 import os
@@ -14,9 +14,9 @@ app = Flask(__name__, template_folder='Templates')
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Set up your OpenAI API key
-openai.api_key = os.getenv('OPENAI_API_KEY')
-logging.debug(f"OpenAI API Key Loaded: {bool(openai.api_key)}")
+# Set up OpenAI client
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+logging.debug(f"OpenAI API Key Loaded: {bool(os.getenv('OPENAI_API_KEY'))}")
 
 # Set up Reddit API client
 reddit = praw.Reddit(
@@ -35,7 +35,7 @@ def analyze_reddit():
             for post in top_posts:
                 combined_content += post.title + ". " + post.selftext + "\n\n"
         
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
@@ -43,7 +43,7 @@ def analyze_reddit():
             ]
         )
         logging.debug(f"OpenAI API Response: {response}")
-        summary = response['choices'][0]['message']['content'].strip()
+        summary = response.choices[0].message.content.strip()
         paragraphs = summary.split('\n\n')
         return paragraphs
     except Exception as e:
@@ -80,7 +80,7 @@ def test_connections():
         reddit_status = f"Error: {type(e).__name__} - {str(e)}"
     
     try:
-        openai.ChatCompletion.create(model="gpt-4", messages=[{"role": "user", "content": "Hello"}])
+        client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": "Hello"}])
         openai_status = "OK"
     except Exception as e:
         openai_status = f"Error: {type(e).__name__} - {str(e)}"
