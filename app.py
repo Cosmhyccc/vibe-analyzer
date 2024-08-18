@@ -6,19 +6,14 @@ import os
 import logging
 import traceback
 
-# Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__, template_folder='Templates')
-
-# Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Set up OpenAI client
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 logging.debug(f"OpenAI API Key Loaded: {bool(os.getenv('OPENAI_API_KEY'))}")
 
-# Set up Reddit API client
 reddit = praw.Reddit(
     client_id=os.getenv('REDDIT_CLIENT_ID'),
     client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
@@ -27,19 +22,19 @@ reddit = praw.Reddit(
 
 def analyze_reddit():
     try:
-        subreddits = ['technology', 'machinelearning', 'tech', 'openai']
+        subreddits = ['technology', 'machinelearning']  # Reduced number of subreddits
         combined_content = ""
         for subreddit_name in subreddits:
             subreddit = reddit.subreddit(subreddit_name)
-            top_posts = subreddit.top(time_filter='day', limit=10)
+            top_posts = subreddit.top(time_filter='day', limit=5)  # Reduced number of posts
             for post in top_posts:
-                combined_content += post.title + ". " + post.selftext + "\n\n"
+                combined_content += post.title + ". " + post.selftext[:100] + "\n\n"  # Limit post content
         
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",  # Changed to a faster model
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Based on the following content provide a concise 2-paragraph summary that captures the key discussions and overall sentiment. The summary should tell the user some detail as to what the discussions were about. make it sound cool and interesting to read, not boring. Do not name the subreddits anywhere in the output, keep it natural. Add a humourous touch to everything. always remember its funny because its true so seek truth in funny. The summary should give a clear sense of what's happening in the tech culture. MAKE IT FUNNY, REALLY FUNNY.:\n\n{combined_content}"}
+                {"role": "user", "content": f"Based on the following content provide a concise 2-paragraph summary that captures the key discussions and overall sentiment. Make it sound cool, interesting, and funny:\n\n{combined_content}"}
             ]
         )
         logging.debug(f"OpenAI API Response: {response}")
@@ -55,7 +50,6 @@ def analyze_reddit():
         logging.error(f"Error traceback: {error_traceback}")
         return [f"An error occurred during analysis: {error_type} - {error_message}. Please try again later."]
 
-# Flask routes
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -80,7 +74,7 @@ def test_connections():
         reddit_status = f"Error: {type(e).__name__} - {str(e)}"
     
     try:
-        client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": "Hello"}])
+        client.chat.completions.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hello"}])
         openai_status = "OK"
     except Exception as e:
         openai_status = f"Error: {type(e).__name__} - {str(e)}"
