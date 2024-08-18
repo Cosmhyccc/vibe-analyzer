@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Set up your OpenAI API key
 openai.api_key = os.getenv('OPENAI_API_KEY')
+logging.debug(f"OpenAI API Key Loaded: {bool(openai.api_key)}")
 
 # Set up Reddit API client
 reddit = praw.Reddit(
@@ -41,6 +42,7 @@ def analyze_reddit():
                 {"role": "user", "content": f"Based on the following content provide a concise 2-paragraph summary that captures the key discussions and overall sentiment. The summary should tell the user some detail as to what the discussions were about. make it sound cool and interesting to read, not boring. Do not name the subreddits anywhere in the output, keep it natural. Add a humourous touch to everything. always remember its funny because its true so seek truth in funny. The summary should give a clear sense of what's happening in the tech culture. MAKE IT FUNNY, REALLY FUNNY.:\n\n{combined_content}"}
             ]
         )
+        logging.debug(f"OpenAI API Response: {response}")
         summary = response['choices'][0]['message']['content'].strip()
         paragraphs = summary.split('\n\n')
         return paragraphs
