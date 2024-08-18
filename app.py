@@ -7,7 +7,7 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='Templates')
 
 # Set up your OpenAI API key
 openai.api_key = os.getenv('OPENAI_API_KEY')
@@ -56,4 +56,4 @@ def about():
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
 
-    #testingggggggg
+    #testinggggggggg
