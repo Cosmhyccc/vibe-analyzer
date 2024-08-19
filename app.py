@@ -12,8 +12,9 @@ load_dotenv()
 app = Flask(__name__, template_folder='Templates')
 logging.basicConfig(level=logging.DEBUG)
 
-# Configure the SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vibe_analyzer.db'
+# Use the /tmp directory in Vercel for the database
+db_path = '/tmp/vibe_analyzer.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
