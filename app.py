@@ -14,13 +14,18 @@ app = Flask(__name__, template_folder='Templates')
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Set up the correct database path inside the instance folder
-db_path = os.path.join(app.instance_path, 'vibe_analyzer.db')
+# Determine the database path based on the environment
+if os.getenv('ENV') == 'production':
+    db_path = '/tmp/vibe_analyzer.db'
+else:
+    db_path = os.path.join(app.instance_path, 'vibe_analyzer.db')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Ensure the instance folder exists
-os.makedirs(app.instance_path, exist_ok=True)
+# Ensure the instance folder exists if using the local path
+if os.getenv('ENV') != 'production':
+    os.makedirs(app.instance_path, exist_ok=True)
 
 db = SQLAlchemy(app)
 
