@@ -4,47 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The AI Times - About Us</title>
+    <link rel="icon" href="https://em-content.zobj.net/source/apple/354/newspaper_1f4f0.png" type="image/png">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        
+        :root {
+            --gradient-bg: linear-gradient(135deg, #ff7e5f, #feb47b);
+            --button-gradient: linear-gradient(to right, #ff6b6b, #feca57);
+        }
+
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #ff7e5f, #feb47b); /* Orangish gradient */
-            color: #e0e0e0;
-            text-align: center;
+            background: var(--gradient-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            background: var(--button-gradient);
+            border: none;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .main-content {
+            flex-grow: 1;
+            text-align: center;
+            padding: 50px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
         h1 {
             font-size: 2.5em;
-            margin-top: 20vh;
+            margin-bottom: 30px;
             color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-        p {
-            font-size: 1.2em;
-            margin: 20px auto;
-            max-width: 800px;
-            color: #ffffff;
+
+        .about-content {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .about-content p {
+            font-size: 1.1em;
             line-height: 1.6;
+            margin-bottom: 20px;
         }
+
         .button-container {
-            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
+
         .button-container a {
-            display: inline-block;
-            margin: 10px;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            color: #ffffff;
+            background: var(--button-gradient);
+            color: white;
             text-decoration: none;
-            border-radius: 25px; /* Rounded button */
-            transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        .button-container .home-button {
-            background-color: #ff6f61; /* Orange button */
-        }
-        .button-container .home-button:hover {
-            background-color: #ff4f4f; /* Slightly darker orange on hover */
-            transform: scale(1.05); /* Slight zoom effect on hover */
+
+        .button-container a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
     </style>
     <!-- Google tag (gtag.js) -->
@@ -57,22 +137,38 @@
     </script>
 </head>
 <body>
-    <h1>Why the world needs another "AI generated XYZ" app</h1>
-    <p>In a world drowning in information, finding the pulse of what really matters has become increasingly challenging. Traditional news media, and even most social media platforms, still operate on an outdated model: one source broadcasts, many consume. It's the digital equivalent of a newspaper, where everyone reads the same headlines regardless of their interests or expertise.</p>
-    
-    <p>But what if we could cut through the noise and capture the essence of what's happening in the AI world, as it happens, through the lens of AI itself?</p>
-    
-    <p>That's where The AI Times comes in. We're not just another news aggregator or AI-powered content farm. We're a real-time snapshot of the AI landscape, curated by AI for human consumption. Our AI doesn't just regurgitate headlines; it scans discussions, analyzes sentiments, and synthesizes the collective pulse of the AI community.</p>
-    
-    <p>Think of us as your AI-powered barber shop for tech talk. Remember those moments where the real story wasn't in the news, but in how people on the street reacted to it? That's what we're bringing to the world of AI news. We're not just telling you what's happening in AI; we're giving you a sense of how the AI community is feeling about it.</p>
-    
-    <p>By leveraging the power of AI to analyze and interpret vast amounts of data from various sources - reddit discussions, Twitter debates, academic papers, industry announcements - we provide you with a unique, holistic view of the AI landscape. It's not just about what's being said, but how it's being received, debated, and integrated into the broader tech culture.</p>
-    
-    <p>In a field as rapidly evolving as AI, staying informed isn't just about knowing the latest developments. It's about understanding the implications, the controversies, the excitement, and the concerns. It's about getting a feel for "what the culture's feeling".</p>
-    
-    <p>Welcome to The AI Times - where AI helps you stay ahead of AI.</p>
-    <div class="button-container">
-        <a href="/" class="home-button">Take me 🏡</a>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="https://em-content.zobj.net/source/apple/354/newspaper_1f4f0.png" alt="AI Times Logo">
+                The AI Times
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+            </div>
+        </nav>
+    </header>
+    <div class="main-content">
+        <h1>Why the world needs another "AI generated XYZ" app✨</h1>
+        <div class="about-content">
+            <p>In a world drowning in information, finding the pulse of what really matters has become increasingly challenging. Traditional news media, and even most social media platforms, still operate on an outdated model: one source broadcasts, many consume. It's the digital equivalent of a newspaper, where everyone reads the same headlines regardless of their interests or expertise.</p>
+            
+            <p>But what if we could cut through the noise and capture the essence of what's happening in the AI world, as it happens, through the lens of AI itself?</p>
+            
+            <p>That's where The AI Times comes in. We're not just another news aggregator or AI-powered content farm. We're a real-time snapshot of the AI landscape, curated by AI for human consumption. Our AI doesn't just regurgitate headlines; it scans discussions, analyzes sentiments, and synthesizes the collective pulse of the AI community.</p>
+            
+            <p>Think of us as your AI-powered barber shop for tech talk. Remember those moments where the real story wasn't in the news, but in how people on the street reacted to it? That's what we're bringing to the world of AI news. We're not just telling you what's happening in AI; we're giving you a sense of how the AI community is feeling about it.</p>
+            
+            <p>By leveraging the power of AI to analyze and interpret vast amounts of data from various sources - reddit discussions, Twitter debates, academic papers, industry announcements - we provide you with a unique, holistic view of the AI landscape. It's not just about what's being said, but how it's being received, debated, and integrated into the broader tech culture.</p>
+            
+            <p>In a field as rapidly evolving as AI, staying informed isn't just about knowing the latest developments. It's about understanding the implications, the controversies, the excitement, and the concerns. It's about getting a feel for "what the culture's feeling" about AI, delivered to you by AI itself.</p>
+            
+            <p>Welcome to The AI Times - where AI helps you stay ahead of AI ✨.</p>
+        </div>
+        <div class="button-container">
+            <a href="/" class="home-button">Take me 🏡</a>
+        </div>
     </div>
 </body>
 </html>
