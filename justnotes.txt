@@ -1,0 +1,13 @@
+Add more subreddits, Add comments to subreddits
+Setup EDW in postgres
+Figure out how to fine tune prompts
+Post more on X and get humans to use the ai times
+Caching: Implement caching for Reddit data and AI-generated summaries to reduce API calls and improve response times. 
+Consider using Flask-Caching or a Redis-based solution.
+Error Handling and Logging: Your error handling is good, but you could enhance it with more specific error types and recovery strategies.
+Consider using a structured logging format for easier parsing and analysis.
+Topic Modeling: Implement topic modeling to automatically categorize discussions into themes.
+User Customization: Allow users to select specific subreddits or topics they're interested in.
+Authentication:If you plan to scale, implement user authentication for personalized experiences and to control access.
+Testing:Implement unit tests and integration tests to ensure reliability as you add features.
+Code Structure:As the project grows, consider restructuring into modules for better organization.

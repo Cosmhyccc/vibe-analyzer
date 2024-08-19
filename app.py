@@ -34,7 +34,7 @@ def analyze_reddit():
             model="gpt-3.5-turbo",  # Changed to a faster model
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Based on the following content provide a concise 3-paragraph summary that captures the key discussions and overall sentiment. Make it sound cool, interesting, and funny:\n\n{combined_content}"}
+                {"role": "user", "content": f"Based on the following content provide a detailed 6 paragraph summary that captures the key discussions and overall sentiment. Add 1 emoji at the end of each paragraph. Make it sound cool, interesting, and funny with dark humor:\n\n{combined_content}"}
             ]
         )
         logging.debug(f"OpenAI API Response: {response}")
