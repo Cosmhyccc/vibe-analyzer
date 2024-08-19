@@ -35,6 +35,12 @@ class Analysis(db.Model):
     subreddit = db.Column(db.String(50), nullable=False)
     summary = db.Column(db.Text, nullable=False)
 
+# Ensure tables are created
+@app.before_first_request
+def create_tables():
+    with app.app_context():
+        db.create_all()
+
 # Initialize OpenAI and Reddit
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 logging.debug(f"OpenAI API Key Loaded: {bool(os.getenv('OPENAI_API_KEY'))}")
@@ -113,8 +119,4 @@ def test_connections():
     return f"Reddit: {reddit_status}<br>OpenAI: {openai_status}"
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Creates the database tables
     app.run(debug=True, port=5001)
-
-    #testing
