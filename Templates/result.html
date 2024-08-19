@@ -113,7 +113,8 @@
             gap: 20px;
         }
 
-        .button-container a {
+        .button-container a,
+        .button-container button {
             background: var(--button-gradient);
             color: white;
             text-decoration: none;
@@ -122,9 +123,18 @@
             border-radius: 30px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: normal;
+            min-width: 150px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .button-container a:hover {
+        .button-container a:hover,
+        .button-container button:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
@@ -170,6 +180,9 @@
         </div>
         <div class="button-container">
             <a href="/" class="home-button">Take me 🏡</a>
+            <form action="/analyze" method="post" style="display: inline;">
+                <button type="submit" class="regenerate-button">Regenerate 🔄</button>
+            </form>
             <a href="/about" class="about-button">Why this site exists</a>
         </div>
     </div>
