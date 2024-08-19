@@ -11,3 +11,5 @@ User Customization: Allow users to select specific subreddits or topics they're 
 Authentication:If you plan to scale, implement user authentication for personalized experiences and to control access.
 Testing:Implement unit tests and integration tests to ensure reliability as you add features.
 Code Structure:As the project grows, consider restructuring into modules for better organization.
+    for eg. different systems for each microservice such as "tech news", "sports", "finance", "politics" and "Music"
+    what about "events around you"

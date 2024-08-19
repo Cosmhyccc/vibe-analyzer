@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 from openai import OpenAI
 import praw
 from dotenv import load_dotenv
@@ -11,6 +12,18 @@ load_dotenv()
 app = Flask(__name__, template_folder='Templates')
 logging.basicConfig(level=logging.DEBUG)
 
+# Configure the SQLite database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vibe_analyzer.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Define a model for storing subreddit analysis
+class Analysis(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    subreddit = db.Column(db.String(50), nullable=False)
+    summary = db.Column(db.Text, nullable=False)
+
+# Initialize OpenAI and Reddit
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 logging.debug(f"OpenAI API Key Loaded: {bool(os.getenv('OPENAI_API_KEY'))}")
 
@@ -22,16 +35,16 @@ reddit = praw.Reddit(
 
 def analyze_reddit():
     try:
-        subreddits = ['technology', 'machinelearning', 'tech']  # Reduced number of subreddits
+        subreddits = ['technology', 'machinelearning', 'tech']
         combined_content = ""
         for subreddit_name in subreddits:
             subreddit = reddit.subreddit(subreddit_name)
-            top_posts = subreddit.top(time_filter='day', limit=5)  # Reduced number of posts
+            top_posts = subreddit.top(time_filter='day', limit=5)
             for post in top_posts:
-                combined_content += post.title + ". " + post.selftext[:100] + "\n\n"  # Limit post content
+                combined_content += post.title + ". " + post.selftext[:100] + "\n\n"
         
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Changed to a faster model
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": f"Based on the following content provide a detailed 6 paragraph summary that captures the key discussions and overall sentiment. Add 1 emoji at the end of each paragraph. Make it sound cool, interesting, and funny with dark humor:\n\n{combined_content}"}
@@ -39,6 +52,12 @@ def analyze_reddit():
         )
         logging.debug(f"OpenAI API Response: {response}")
         summary = response.choices[0].message.content.strip()
+        
+        # Save the analysis result to the database
+        new_analysis = Analysis(subreddit=",".join(subreddits), summary=summary)
+        db.session.add(new_analysis)
+        db.session.commit()
+
         paragraphs = summary.split('\n\n')
         return paragraphs
     except Exception as e:
@@ -82,6 +101,6 @@ def test_connections():
     return f"Reddit: {reddit_status}<br>OpenAI: {openai_status}"
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Creates the database tables
     app.run(debug=True, port=5001)
-
-    #testtinggg
