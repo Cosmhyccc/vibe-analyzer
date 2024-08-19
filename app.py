@@ -10,12 +10,18 @@ import traceback
 load_dotenv()
 
 app = Flask(__name__, template_folder='Templates')
+
+# Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Use the /tmp directory in Vercel for the database
-db_path = '/tmp/vibe_analyzer.db'
+# Set up the correct database path inside the instance folder
+db_path = os.path.join(app.instance_path, 'vibe_analyzer.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Ensure the instance folder exists
+os.makedirs(app.instance_path, exist_ok=True)
+
 db = SQLAlchemy(app)
 
 # Define a model for storing subreddit analysis
@@ -23,6 +29,11 @@ class Analysis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subreddit = db.Column(db.String(50), nullable=False)
     summary = db.Column(db.Text, nullable=False)
+
+# Ensure the database and tables are created before the first request
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 # Initialize OpenAI and Reddit
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -102,7 +113,4 @@ def test_connections():
     return f"Reddit: {reddit_status}<br>OpenAI: {openai_status}"
 
 if __name__ == '__main__':
-    with app.app_context():
-        # Ensure the database and tables are created
-        db.create_all()
     app.run(debug=True, port=5001)
