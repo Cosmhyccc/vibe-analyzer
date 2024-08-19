@@ -22,7 +22,7 @@ reddit = praw.Reddit(
 
 def analyze_reddit():
     try:
-        subreddits = ['technology', 'machinelearning']  # Reduced number of subreddits
+        subreddits = ['technology', 'machinelearning', 'tech']  # Reduced number of subreddits
         combined_content = ""
         for subreddit_name in subreddits:
             subreddit = reddit.subreddit(subreddit_name)
