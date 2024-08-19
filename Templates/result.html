@@ -82,6 +82,8 @@
             padding: 50px 20px;
             max-width: 800px;
             margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         h1 {
@@ -111,6 +113,7 @@
             display: flex;
             justify-content: center;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
         .button-container a,
@@ -142,6 +145,27 @@
         .error {
             color: #ff4f4f;
             font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .button-container a,
+            .button-container button {
+                width: 100%;
+                max-width: 200px;
+            }
         }
     </style>
     <!-- Google tag (gtag.js) -->
