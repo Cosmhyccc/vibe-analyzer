@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
 from openai import OpenAI
 import praw
 from dotenv import load_dotenv
@@ -13,33 +12,6 @@ app = Flask(__name__, template_folder='Templates')
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
-
-# Determine the database path based on the environment
-if os.getenv('ENV') == 'production':
-    db_path = '/tmp/vibe_analyzer.db'
-else:
-    db_path = os.path.join(app.instance_path, 'vibe_analyzer.db')
-
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Ensure the instance folder exists if using the local path
-if os.getenv('ENV') != 'production':
-    os.makedirs(app.instance_path, exist_ok=True)
-
-db = SQLAlchemy(app)
-
-# Define a model for storing subreddit analysis
-class Analysis(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    subreddit = db.Column(db.String(50), nullable=False)
-    summary = db.Column(db.Text, nullable=False)
-
-# Ensure tables are created
-@app.before_first_request
-def create_tables():
-    with app.app_context():
-        db.create_all()
 
 # Initialize OpenAI and Reddit
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -70,11 +42,6 @@ def analyze_reddit():
         )
         logging.debug(f"OpenAI API Response: {response}")
         summary = response.choices[0].message.content.strip()
-        
-        # Save the analysis result to the database
-        new_analysis = Analysis(subreddit=",".join(subreddits), summary=summary)
-        db.session.add(new_analysis)
-        db.session.commit()
 
         paragraphs = summary.split('\n\n')
         return paragraphs
