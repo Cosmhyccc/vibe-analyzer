@@ -21,7 +21,7 @@
             color: #ffffff;
             font-family: 'Roboto', sans-serif;
             text-align: center;
-            overflow-x: hidden; /* Prevent any horizontal overflow */
+            overflow-x: hidden;
         }
 
         body {
@@ -31,7 +31,7 @@
 
         header {
             padding: 15px 0;
-            box-shadow: none; /* Remove shadow to prevent any separation */
+            box-shadow: none;
             flex-shrink: 0;
         }
 
@@ -104,7 +104,7 @@
             padding: 30px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: none; /* Remove any borders */
+            border: none;
         }
 
         #summary p {
@@ -198,23 +198,58 @@
     <div class="main-content">
         <h1>-By Ai, For Humans ✨ + 🧬</h1>
         <div id="summary">
-            {% for paragraph in summary %}
-                {% if 'An error occurred during analysis' in paragraph %}
-                    <p class="error">{{ paragraph }}</p>
-                    <p>Please check the application logs for more details.</p>
-                {% else %}
-                    <p>{{ paragraph }}</p>
-                {% endif %}
-            {% endfor %}
-                <p>-Written by AI, written for Humans ✨🧬</p>
+            <!-- Content will be dynamically inserted here -->
         </div>
         <div class="button-container">
             <a href="/" class="home-button">Take me 🏡</a>
-            <form action="/analyze" method="post" style="display: inline;">
-                <button type="submit" class="regenerate-button">Regenerate 🔄</button>
-            </form>
+            <button id="regenerateButton" class="regenerate-button">Regenerate 🔄</button>
             <a href="/about" class="about-button">Why this site exists🧐</a>
         </div>
     </div>
+
+    <script>
+        function displayResults(summary) {
+            const summaryDiv = document.getElementById('summary');
+            summaryDiv.innerHTML = '';
+            summary.forEach(paragraph => {
+                const p = document.createElement('p');
+                if (paragraph.includes('An error occurred during analysis')) {
+                    p.classList.add('error');
+                }
+                p.textContent = paragraph;
+                summaryDiv.appendChild(p);
+            });
+            summaryDiv.innerHTML += '<p>-Written by AI, written for Humans ✨🧬</p>';
+        }
+
+        function loadResults() {
+            const results = JSON.parse(localStorage.getItem('analysisResults'));
+            if (results) {
+                displayResults(results);
+            } else {
+                document.getElementById('summary').innerHTML = '<p class="error">No results available. Please analyze again.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadResults);
+
+        document.getElementById('regenerateButton').addEventListener('click', function() {
+            this.disabled = true;
+            fetch('/analyze', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('analysisResults', JSON.stringify(data.summary));
+                displayResults(data.summary);
+                this.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                this.disabled = false;
+            });
+        });
+    </script>
 </body>
 </html>

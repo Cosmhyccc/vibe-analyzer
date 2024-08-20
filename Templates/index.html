@@ -30,7 +30,7 @@
 
         header {
             padding: 15px 0;
-            box-shadow: none; /* Remove shadow to prevent any separation */
+            box-shadow: none;
             flex-shrink: 0;
         }
 
@@ -101,10 +101,6 @@
             font-weight: 300;
         }
 
-        form {
-            margin-top: 40px;
-        }
-
         button {
             background: var(--button-gradient);
             border: none;
@@ -127,7 +123,6 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
         }
 
-        /* Subtle geometric pattern */
         .main-content::before {
             content: "";
             position: absolute;
@@ -139,6 +134,12 @@
             background-size: 60px 60px;
             opacity: 0.2;
             z-index: -1;
+        }
+
+        #loadingMessage {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #f0f0f0;
         }
     </style>
 </head>
@@ -158,10 +159,30 @@
     <div class="main-content">
         <h1>-By Ai, For Humans ✨ + 🧬</h1>
         
-        <form action="/analyze" method="post">
-            <button type="submit">PROVE IT 🤔</button>
-        </form>
+        <button id="analyzeButton">PROVE IT 🤔</button>
+        <div id="loadingMessage" style="display: none;">Generating... One moment king.</div>
     </div>
     
+    <script>
+        document.getElementById('analyzeButton').addEventListener('click', function() {
+            this.disabled = true;
+            document.getElementById('loadingMessage').style.display = 'block';
+            
+            fetch('/analyze', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('analysisResults', JSON.stringify(data.summary));
+                window.location.href = '/result';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                this.disabled = false;
+                document.getElementById('loadingMessage').style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
