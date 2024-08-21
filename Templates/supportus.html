@@ -72,12 +72,26 @@
             border-radius: 20px;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            display: inline-block;
+            line-height: normal;    
+            white-space: nowrap;
         }
 
         .nav-links a:hover {
             transform: translateY(-6px);
             box-shadow: 0 6px 18px rgba(0, 255, 0, 0.8);
         }
+        @media (max-width: 768px) {
+                .nav-links {
+                     gap: 10px;
+                }
+
+                .nav-links a {
+                    padding: 8px 12px;
+                    font-size: 0.8em;
+                    
+                }
+            }
 
         .main-content {
             flex-grow: 1;
