@@ -58,6 +58,12 @@
             height: 30px;
             margin-right: 10px;
         }
+        
+        .logo span {
+            font-family: 'Orbitron', sans-serif;
+            margin-left: 10px;
+            letter-spacing: 1px;
+        }
 
         .nav-links {
             display: flex;
@@ -153,13 +159,73 @@
             font-weight: bold;
         }
 
-        @media (max-width: 600px) {
-            .main-content {
-                padding: 30px 15px;
-            }
+        .loading-container {
+            display: none;
+            margin-top: 20px;
+            position: relative;
+            white-space: nowrap;
+        }
 
+        .loading-animation {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: var(--text-color);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+            vertical-align: middle;
+        }
+
+        .loading-text {
+            margin-left: 10px;
+            font-size: 1.2em;
+            color: var(--text-color);
+            vertical-align: middle;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+        }
+
+        @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
+            }
+
+            .button-container a,
+            .button-container button {
+                font-size: 0.9em;
+                padding: 10px 20px;
+            }
+
+            .loading-container {
+                margin-top: 15px;
+            }
+
+            .loading-animation {
+                width: 15px;
+                height: 15px;
+            }
+
+            .loading-text {
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
             }
 
             .button-container {
@@ -171,6 +237,14 @@
             .button-container button {
                 width: 100%;
                 max-width: 200px;
+            }
+
+            .loading-container {
+                margin-top: 10px;
+            }
+
+            .loading-text {
+                font-size: 0.9em;
             }
         }
     </style>
@@ -189,7 +263,7 @@
         </nav>
     </header>
     <div class="main-content">
-        <h1>-By Ai, For Humanity [ ✨ + 🧬 ]</h1>
+        <h1>✨This news is real but totally AI generated. Read at your own risk.</h1>
         <div id="summary">
             <!-- Content will be dynamically inserted here -->
         </div>
@@ -197,6 +271,10 @@
             <a href="/" class="home-button">Take me 🏡</a>
             <button class="regenerate-button">Regenerate 🔄</button>
             <a href="/about" class="about-button">Why this site exists🧐</a>
+        </div>
+        <div class="loading-container">
+            <span class="loading-animation"></span>
+            <span class="loading-text">✨Regenerating news... one moment king.</span>
         </div>
     </div>
 
@@ -209,7 +287,7 @@
             p.textContent = paragraph;
             summaryDiv.appendChild(p);
         });
-        summaryDiv.innerHTML += '<p>-Written by AI, written for Humans ✨🧬</p>';
+        summaryDiv.innerHTML += '<p>-Written by AI, for Humans ✨🧬</p>';
     }
 
     function loadResults() {
@@ -225,6 +303,8 @@
 
     document.querySelector('.regenerate-button').addEventListener('click', function() {
         this.disabled = true;
+        document.querySelector('.loading-container').style.display = 'block';
+        
         fetch('/analyze', {
             method: 'POST',
         })
@@ -233,11 +313,13 @@
             localStorage.setItem('analysisResults', JSON.stringify(data.summary));
             displayResults(data.summary);
             this.disabled = false;
+            document.querySelector('.loading-container').style.display = 'none';
         })
         .catch(error => {
             console.error('Error:', error);
             alert('An error occurred. Please try again.');
             this.disabled = false;
+            document.querySelector('.loading-container').style.display = 'none';
         });
     });
     </script>
