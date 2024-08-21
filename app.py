@@ -69,5 +69,9 @@ def result():
 def about():
     return render_template('aboutus.html')
 
+@app.route('/supportus')
+def support():
+    return render_template('supportus.html')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
