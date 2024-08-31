@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+.main-content {
+    padding: 2rem;
+}
+
+.button-container {
+    margin-top: 1rem;
+}
+
+.loading-container {
+    margin-top: 1rem;
+}
+
+.google-login-button {
+    display: inline-block;
+    background-color: #4285F4;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.timeline-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.support-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.home-button, .about-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #007B9A;
+}
