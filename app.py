@@ -50,7 +50,7 @@ def analyze():
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Based on the following content provide a detailed 6 paragraph summary that captures the key discussions and overall sentiment. Add 1 emoji at the end of each paragraph. Make it sound cool, interesting, and funny with dark humor:\n\n{content}"}
+                {"role": "user", "content": f" Based on the following content provide a detailed 6 paragraph summary that captures the key discussions and overall sentiment. Add 1 emoji at the end of each paragraph. Add a 1 liner title before each paragraph. Make it sound cool, interesting, and funny with dark humor. Here is the content:\n\n{content}"}
             ]
         )
         summary = response.choices[0].message.content.strip().split('\n\n')
