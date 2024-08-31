@@ -49,8 +49,8 @@ def analyze():
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f" Based on the following content provide a detailed 6 paragraph summary that captures the key discussions and overall sentiment. Add 1 emoji at the end of each paragraph. Add a 1 liner title before each paragraph. Make it sound cool, interesting, and funny with dark humor. Here is the content:\n\n{content}"}
+                {"role": "system", "content": "You are a helpful and witty assistant who excels at summarizing tech news with a blend of humor and insight. Keep the tone conversational but informative, and always aim to engage the reader. You always give 7 detailed paragraphs , each has one headline, put one emoji before each title."},
+                {"role": "user", "content": f" Based on the following content provide a detailed 7 paragraph summary that captures the key discussions and overall sentiment. Add 1 emoji at the end of each paragraph. Add a 1 liner title before each paragraph. Make it sound cool, interesting, and funny with dark humor. Here is the content:\n\n{content}"}
             ]
         )
         summary = response.choices[0].message.content.strip().split('\n\n')
