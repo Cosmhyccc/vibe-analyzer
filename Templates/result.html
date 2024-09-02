@@ -263,6 +263,14 @@
                 font-size: 0.9em;
             }
         }
+
+        /* New styles for headlines */
+        .headline {
+            font-weight: bold;
+            color: red;
+            margin-bottom: 0.5em;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
@@ -296,14 +304,16 @@
     </div>
 
     <script>
+    function formatParagraph(paragraph) {
+        const lines = paragraph.split('\n');
+        const headline = lines[0];
+        const content = lines.slice(1).join('\n');
+        return `<h2 class="headline">${headline}</h2><p>${content}</p>`;
+    }
+
     function displayResults(summary) {
         const summaryDiv = document.getElementById('summary');
-        summaryDiv.innerHTML = '';
-        summary.forEach(paragraph => {
-            const p = document.createElement('p');
-            p.textContent = paragraph;
-            summaryDiv.appendChild(p);
-        });
+        summaryDiv.innerHTML = summary.map(formatParagraph).join('');
         summaryDiv.innerHTML += '<p>-Written by AI, for Humans ✨🧬</p>';
     }
 
