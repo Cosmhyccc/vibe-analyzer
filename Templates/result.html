@@ -89,7 +89,6 @@
             transform: translateY(-6px);
             box-shadow: 0 6px 18px rgba(0, 255, 0, 0.8);
         }
-
         @media (max-width: 768px) {
             .nav-links {
                 gap: 10px;
@@ -98,10 +97,11 @@
             .nav-links a {
                 padding: 8px 12px;
                 font-size: 0.8em;
-                border-radius: 15px;
-                min-width: 70px;
+                border-radius: 15px;  /* Reduced border-radius for mobile */
+                min-width: 70px;  /* Ensure minimum width to prevent squishing */
             }
         }
+        
 
         .main-content {
             flex-grow: 1;
@@ -128,14 +128,6 @@
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0, 255, 0, 0.1);
             border: none;
-        }
-
-        #summary h2 {
-            font-size: 2em;
-            color: #FF4500;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-align: left;
         }
 
         #summary p {
@@ -304,66 +296,50 @@
     </div>
 
     <script>
-        function displayResults(summary) {
-            const summaryDiv = document.getElementById('summary');
-            summaryDiv.innerHTML = '';
-        
-            summary.forEach(section => {
-                const [headline, ...paragraphParts] = section.split(/(?<=\.\s)/);
-                const paragraph = paragraphParts.join('').trim();
-        
-                const title = document.createElement('h2');
-                title.style.fontSize = '2em';
-                title.style.fontWeight = 'bold';
-                title.style.color = '#FF4500';
-                title.textContent = headline.trim();
-        
-                const paragraphElem = document.createElement('p');
-                paragraphElem.style.fontWeight = 'normal';
-                paragraphElem.style.color = '#00FF00';
-                paragraphElem.textContent = paragraph;
-        
-                summaryDiv.appendChild(title);
-                summaryDiv.appendChild(document.createElement('br'));
-                summaryDiv.appendChild(paragraphElem);
-                summaryDiv.appendChild(document.createElement('br'));
-            });
-        
-            summaryDiv.innerHTML += '<p>-Written by AI, for Humans ✨🧬</p>';
-        }
-        
-        function loadResults() {
-            const results = JSON.parse(localStorage.getItem('analysisResults'));
-            if (results) {
-                displayResults(results);
-            } else {
-                document.getElementById('summary').innerHTML = '<p>No results available. Please analyze again.</p>';
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', loadResults);
-        
-        document.querySelector('.regenerate-button').addEventListener('click', function() {
-            this.disabled = true;
-            document.querySelector('.loading-container').style.display = 'block';
-            
-            fetch('/analyze', {
-                method: 'POST',
-            })
-            .then(response => response.json())
-            .then(data => {
-                localStorage.setItem('analysisResults', JSON.stringify(data.summary));
-                displayResults(data.summary);
-                this.disabled = false;
-                document.querySelector('.loading-container').style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-                this.disabled = false;
-                document.querySelector('.loading-container').style.display = 'none';
-            });
+    function displayResults(summary) {
+        const summaryDiv = document.getElementById('summary');
+        summaryDiv.innerHTML = '';
+        summary.forEach(paragraph => {
+            const p = document.createElement('p');
+            p.textContent = paragraph;
+            summaryDiv.appendChild(p);
         });
+        summaryDiv.innerHTML += '<p>-Written by AI, for Humans ✨🧬</p>';
+    }
+
+    function loadResults() {
+        const results = JSON.parse(localStorage.getItem('analysisResults'));
+        if (results) {
+            displayResults(results);
+        } else {
+            document.getElementById('summary').innerHTML = '<p>No results available. Please analyze again.</p>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadResults);
+
+    document.querySelector('.regenerate-button').addEventListener('click', function() {
+        this.disabled = true;
+        document.querySelector('.loading-container').style.display = 'block';
+        
+        fetch('/analyze', {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            localStorage.setItem('analysisResults', JSON.stringify(data.summary));
+            displayResults(data.summary);
+            this.disabled = false;
+            document.querySelector('.loading-container').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+            this.disabled = false;
+            document.querySelector('.loading-container').style.display = 'none';
+        });
+    });
     </script>
+    <a href="https://www.producthunt.com/posts/the-ai-times?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-the&#0045;ai&#0045;times" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=483233&theme=light" alt="The&#0032;AI&#0032;Times - The&#0032;first&#0032;AI&#0032;news&#0032;network✨ | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </body>
 </html>
