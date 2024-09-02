@@ -89,6 +89,7 @@
             transform: translateY(-6px);
             box-shadow: 0 6px 18px rgba(0, 255, 0, 0.8);
         }
+
         @media (max-width: 768px) {
             .nav-links {
                 gap: 10px;
@@ -97,11 +98,10 @@
             .nav-links a {
                 padding: 8px 12px;
                 font-size: 0.8em;
-                border-radius: 15px;  /* Reduced border-radius for mobile */
-                min-width: 70px;  /* Ensure minimum width to prevent squishing */
+                border-radius: 15px;
+                min-width: 70px;
             }
         }
-        
 
         .main-content {
             flex-grow: 1;
@@ -309,28 +309,24 @@
             summaryDiv.innerHTML = '';
         
             summary.forEach(section => {
-                // Split the section into headline and paragraph based on the first period (.)
                 const [headline, ...paragraphParts] = section.split(/(?<=\.\s)/);
-                const paragraph = paragraphParts.join('').trim();  // Combine the rest as the paragraph
+                const paragraph = paragraphParts.join('').trim();
         
-                // Create and style the headline
                 const title = document.createElement('h2');
                 title.style.fontSize = '2em';
                 title.style.fontWeight = 'bold';
                 title.style.color = '#FF4500';
-                title.textContent = headline.trim();  // Just the headline without any extra characters
+                title.textContent = headline.trim();
         
-                // Create and style the paragraph
                 const paragraphElem = document.createElement('p');
-                paragraphElem.style.fontWeight = 'normal';  // Ensure paragraph text is normal weight
-                paragraphElem.style.color = '#00FF00';  // Set paragraph text color to the default text color
+                paragraphElem.style.fontWeight = 'normal';
+                paragraphElem.style.color = '#00FF00';
                 paragraphElem.textContent = paragraph;
         
-                // Add the headline and paragraph to the summary div
                 summaryDiv.appendChild(title);
-                summaryDiv.appendChild(document.createElement('br'));  // Add a line break after the title
+                summaryDiv.appendChild(document.createElement('br'));
                 summaryDiv.appendChild(paragraphElem);
-                summaryDiv.appendChild(document.createElement('br'));  // Add a line break after the paragraph
+                summaryDiv.appendChild(document.createElement('br'));
             });
         
             summaryDiv.innerHTML += '<p>-Written by AI, for Humans ✨🧬</p>';
@@ -368,4 +364,6 @@
                 document.querySelector('.loading-container').style.display = 'none';
             });
         });
-        </script>
+    </script>
+</body>
+</html>
