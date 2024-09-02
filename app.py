@@ -1,17 +1,11 @@
-import ssl
-import certifi
 import logging
 import praw
 from flask import Flask, render_template, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-import traceback
 
 load_dotenv()
-
-# Create SSL context
-ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 app = Flask(__name__, template_folder='Templates')
 
@@ -50,11 +44,7 @@ def fetch_summary(content):
         return response.choices[0].message.content.strip()
     except Exception as e:
         logging.error(f"Error fetching summary: {str(e)}")
-        logging.error(traceback.format_exc())
         return "An error occurred while generating this summary."
-
-def generate_summaries(posts):
-    return [fetch_summary(post) for post in posts]
 
 @app.route('/')
 def home():
@@ -64,11 +54,10 @@ def home():
 def analyze():
     try:
         content = fetch_reddit_data()
-        summaries = generate_summaries(content)
+        summaries = [fetch_summary(post) for post in content]
         return jsonify({'summary': summaries})
     except Exception as e:
         logging.error(f"Error in analyze: {str(e)}")
-        logging.error(traceback.format_exc())
         return jsonify({'error': str(e)}), 500
 
 @app.route('/result')
@@ -83,5 +72,4 @@ def about():
 def support():
     return render_template('supportus.html')
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+# Remove the if __name__ == '__main__' block for Vercel deployment
