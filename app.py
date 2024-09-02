@@ -27,12 +27,12 @@ def fetch_reddit_data():
                          client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
                          user_agent='Vibe_Analysis_V1')
     
-    subreddits = ['technology', 'machinelearning', 'tech']
+    subreddits = ['technology', 'machinelearning']
     combined_content = ""
     
     for subreddit_name in subreddits:
         subreddit = reddit.subreddit(subreddit_name)
-        for post in subreddit.top(time_filter='day', limit=5):
+        for post in subreddit.top(time_filter='day', limit=3):
             combined_content += post.title + ". " + post.selftext[:100] + "\n\n"
     
     return combined_content
@@ -49,7 +49,7 @@ def analyze():
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful and witty assistant who excels at summarizing tech news with a blend of humor and insight. The headline should be 1 short sentence, never number the headline. Followed by a news paragraph that’s detailed, containing 7 sentences. The news content should follow the headline and provide context, analysis, and a humorous or insightful closing line.."},
+                {"role": "system", "content": "You are a helpful and witty assistant who excels at summarizing tech news with a blend of humor and insight. The headline should be 1 short sentence, never number the headline. Followed by a news paragraph that’s detailed, containing 7 sentences. The news content should follow the headline and provide context, analysis, and a humorous or insightful closing line."},
                 {"role": "user", "content": f" Based on the following content, create 7 news paragraphs, each with 1 line headline and detailed 7-sentence news summary that correlates to the headline. The headline should be 1 sentence, and the news summary should be informative with 7 sentences, engaging, and provide some humorous or insightful commentary.:\n\n{content}"}
             ]
         )
