@@ -45,17 +45,22 @@ def home():
 def analyze():
     try:
         content = fetch_reddit_data()
+
+        summaries = []
         
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant who writes short, catchy headlines followed by detailed news summaries. Each headline should be one sentence, and the news summary should be exactly seven sentences, providing context, analysis, and a touch of humor."},
-                {"role": "user", "content": f" Write 7 news paragraphs based on the following content. Each paragraph should start with a 1-sentence headline, followed by a 7-sentence detailed news summary.:\n\n{content}"}
-            ]
-        )
-        summary = response.choices[0].message.content.strip().split('\n\n')
+        for piece in content.split('\n\n'):
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant who writes short, catchy headlines followed by detailed news summaries. Each headline should be one sentence, and the news summary should be exactly seven sentences, providing context, analysis, and a touch of humor."},
+                    {"role": "user", "content": f" Write a news paragraph based on the following content. The paragraph should start with a 1-sentence headline, followed by a 7-sentence detailed news summary.:\n\n{piece}"}
+                ]
+            )
+            summary = response.choices[0].message.content.strip()
+            summaries.append(summary)
+
+        return jsonify({'summary': summaries})
         
-        return jsonify({'summary': summary})
     except Exception as e:
         logging.error(f"Error in analyze: {str(e)}")
         logging.error(traceback.format_exc())
