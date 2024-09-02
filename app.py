@@ -7,9 +7,6 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import traceback
-from functools import lru_cache
-import threading
-import time
 
 load_dotenv()
 
@@ -32,14 +29,7 @@ reddit = praw.Reddit(
     user_agent='Vibe_Analysis_V1'
 )
 
-# Global cache for summaries
-summary_cache = {}
-last_update_time = 0
-cache_lock = threading.Lock()
-
-# Cache for Reddit data
-@lru_cache(maxsize=1)
-def fetch_cached_reddit_data():
+def fetch_reddit_data():
     subreddits = ['technology', 'machinelearning']
     all_posts = []
     for subreddit_name in subreddits:
@@ -66,31 +56,6 @@ def fetch_summary(content):
 def generate_summaries(posts):
     return [fetch_summary(post) for post in posts]
 
-def update_cache():
-    global last_update_time
-    with cache_lock:
-        current_time = time.time()
-        if current_time - last_update_time < 3600:  # Update cache every hour
-            return
-        
-        content = fetch_cached_reddit_data()
-        summaries = generate_summaries(content)
-        summary_cache['summaries'] = summaries
-        last_update_time = current_time
-
-# Start a background thread to update the cache
-def start_background_task():
-    def update_cache_periodically():
-        while True:
-            update_cache()
-            time.sleep(3600)  # Sleep for an hour
-
-    thread = threading.Thread(target=update_cache_periodically)
-    thread.daemon = True
-    thread.start()
-
-start_background_task()
-
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -98,11 +63,8 @@ def home():
 @app.route('/analyze', methods=['POST'])
 def analyze():
     try:
-        with cache_lock:
-            if 'summaries' not in summary_cache:
-                update_cache()
-            summaries = summary_cache.get('summaries', [])
-        
+        content = fetch_reddit_data()
+        summaries = generate_summaries(content)
         return jsonify({'summary': summaries})
     except Exception as e:
         logging.error(f"Error in analyze: {str(e)}")
