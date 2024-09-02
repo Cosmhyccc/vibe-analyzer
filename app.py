@@ -49,8 +49,8 @@ def analyze():
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful and witty assistant who excels at summarizing tech news with a blend of humor and insight. The headline should be 1 short sentence, never number the headline. Followed by a news paragraph that’s detailed, containing 7 sentences. The news content should follow the headline and provide context, analysis, and a humorous or insightful closing line."},
-                {"role": "user", "content": f" Based on the following content, create 7 news paragraphs, each with 1 line headline and detailed 7-sentence news summary that correlates to the headline. The headline should be 1 sentence, and the news summary should be informative with 7 sentences, engaging, and provide some humorous or insightful commentary.:\n\n{content}"}
+                {"role": "system", "content": "You are a helpful assistant who writes short, catchy headlines followed by detailed news summaries. Each headline should be one sentence, and the news summary should be exactly seven sentences, providing context, analysis, and a touch of humor."},
+                {"role": "user", "content": f" Write 7 news paragraphs based on the following content. Each paragraph should start with a 1-sentence headline, followed by a 7-sentence detailed news summary.:\n\n{content}"}
             ]
         )
         summary = response.choices[0].message.content.strip().split('\n\n')
