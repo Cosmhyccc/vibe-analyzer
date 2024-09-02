@@ -7,9 +7,9 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import traceback
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
+import threading
+import time
 
 load_dotenv()
 
@@ -32,6 +32,11 @@ reddit = praw.Reddit(
     user_agent='Vibe_Analysis_V1'
 )
 
+# Global cache for summaries
+summary_cache = {}
+last_update_time = 0
+cache_lock = threading.Lock()
+
 # Cache for Reddit data
 @lru_cache(maxsize=1)
 def fetch_cached_reddit_data():
@@ -43,39 +48,60 @@ def fetch_cached_reddit_data():
             all_posts.append(f"{post.title}. {post.selftext[:50]}")
     return all_posts
 
-# Asynchronous OpenAI API call
-async def async_openai_call(client, content):
-    loop = asyncio.get_event_loop()
-    with ThreadPoolExecutor() as pool:
-        response = await loop.run_in_executor(
-            pool,
-            lambda: client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": f"Write a news paragraph based on the following content. The paragraph should start with a 1-sentence headline, followed by a 7-sentence detailed news summary.:\n\n{content}"}
-                ]
-            )
+def fetch_summary(content):
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"Write a news paragraph based on the following content. The paragraph should start with a 1-sentence headline, followed by a 7-sentence detailed news summary.:\n\n{content}"}
+            ]
         )
-    return response.choices[0].message.content.strip()
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        logging.error(f"Error fetching summary: {str(e)}")
+        logging.error(traceback.format_exc())
+        return "An error occurred while generating this summary."
 
-# Asynchronous summary generation
-async def generate_summaries(posts):
-    tasks = [async_openai_call(client, post) for post in posts]
-    return await asyncio.gather(*tasks)
+def generate_summaries(posts):
+    return [fetch_summary(post) for post in posts]
+
+def update_cache():
+    global last_update_time
+    with cache_lock:
+        current_time = time.time()
+        if current_time - last_update_time < 3600:  # Update cache every hour
+            return
+        
+        content = fetch_cached_reddit_data()
+        summaries = generate_summaries(content)
+        summary_cache['summaries'] = summaries
+        last_update_time = current_time
+
+# Start a background thread to update the cache
+def start_background_task():
+    def update_cache_periodically():
+        while True:
+            update_cache()
+            time.sleep(3600)  # Sleep for an hour
+
+    thread = threading.Thread(target=update_cache_periodically)
+    thread.daemon = True
+    thread.start()
+
+start_background_task()
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
 @app.route('/analyze', methods=['POST'])
-async def analyze():
+def analyze():
     try:
-        # Fetch cached Reddit data
-        content = fetch_cached_reddit_data()
-        
-        # Generate summaries asynchronously
-        summaries = await generate_summaries(content)
+        with cache_lock:
+            if 'summaries' not in summary_cache:
+                update_cache()
+            summaries = summary_cache.get('summaries', [])
         
         return jsonify({'summary': summaries})
     except Exception as e:
@@ -96,9 +122,4 @@ def support():
     return render_template('supportus.html')
 
 if __name__ == '__main__':
-    from hypercorn.config import Config
-    from hypercorn.asyncio import serve
-
-    config = Config()
-    config.bind = ["localhost:5001"]
-    asyncio.run(serve(app, config))
+    app.run(debug=True, port=5001)
