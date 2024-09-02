@@ -33,7 +33,7 @@ def fetch_reddit_data():
     for subreddit_name in subreddits:
         subreddit = reddit.subreddit(subreddit_name)
         for post in subreddit.top(time_filter='day', limit=3):
-            combined_content += post.title + ". " + post.selftext[:70] + "\n\n"
+            combined_content += post.title + ". " + post.selftext[:100] + "\n\n"
     
     return combined_content
 
